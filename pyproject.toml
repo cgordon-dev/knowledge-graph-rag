@@ -1,0 +1,212 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "knowledge-graph-rag"
+version = "1.0.0"
+description = "Offline Knowledge Graph-RAG System with AI Digital Twins"
+authors = [{name = "AI Systems Team", email = "ai-systems@company.com"}]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Database :: Database Engines/Servers",
+    "Topic :: Security",
+]
+
+dependencies = [
+    # Core Dependencies
+    "python>=3.11",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "asyncio-mqtt>=0.16.0",
+    
+    # AI/ML Dependencies
+    "torch>=2.1.0",
+    "transformers>=4.35.0",
+    "sentence-transformers>=2.2.0",
+    "langchain>=0.1.0",
+    "langchain-community>=0.0.10",
+    "openai>=1.0.0",
+    
+    # Database Dependencies
+    "neo4j>=5.15.0",
+    "redis>=5.0.0",
+    "faiss-cpu>=1.7.4",
+    
+    # Data Processing
+    "pandas>=2.1.0",
+    "numpy>=1.24.0",
+    "pymupdf>=1.23.0",
+    "beautifulsoup4>=4.12.0",
+    "spacy>=3.7.0",
+    
+    # API Framework
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "pydantic>=2.0.0",
+    "python-multipart>=0.0.6",
+    
+    # MCP Protocol
+    "mcp>=1.0.0",
+    "websockets>=12.0",
+    
+    # Security & Compliance
+    "cryptography>=41.0.0",
+    "passlib[bcrypt]>=1.7.4",
+    "python-jose[cryptography]>=3.3.0",
+    
+    # Monitoring & Logging
+    "prometheus-client>=0.19.0",
+    "structlog>=23.2.0",
+    "rich>=13.7.0",
+    
+    # Configuration
+    "python-dotenv>=1.0.0",
+    "pyyaml>=6.0.1",
+    "tomli>=2.0.1",
+    
+    # Testing & Development
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "mypy>=1.7.0",
+    "pre-commit>=3.5.0",
+]
+
+[project.optional-dependencies]
+gpu = [
+    "torch[cuda]>=2.1.0",
+    "faiss-gpu>=1.7.4",
+]
+
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.12.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "mypy>=1.7.0",
+    "pre-commit>=3.5.0",
+    "sphinx>=7.2.0",
+    "sphinx-rtd-theme>=1.3.0",
+]
+
+prod = [
+    "gunicorn>=21.2.0",
+    "supervisor>=4.2.5",
+]
+
+[project.urls]
+Homepage = "https://github.com/company/knowledge-graph-rag"
+Documentation = "https://knowledge-graph-rag.readthedocs.io/"
+Repository = "https://github.com/company/knowledge-graph-rag"
+Issues = "https://github.com/company/knowledge-graph-rag/issues"
+
+[project.scripts]
+kg-rag = "kg_rag.cli:main"
+kg-rag-server = "kg_rag.api.main:run_server"
+kg-rag-import = "kg_rag.data.importer:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["kg_rag"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "neo4j.*",
+    "transformers.*",
+    "torch.*",
+    "faiss.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = ["tests"]
+filterwarnings = [
+    "error",
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+    "security: marks tests as security tests",
+]
+
+[tool.coverage.run]
+source = ["src"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "setup.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\bProtocol\):",
+    "@(abc\.)?abstractmethod",
+]
