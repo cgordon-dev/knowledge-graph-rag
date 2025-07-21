@@ -37,6 +37,14 @@ dependencies = [
     "langchain-community>=0.0.10",
     "openai>=1.0.0",
     
+    # Google ADK Dependencies
+    "google-cloud-aiplatform>=1.45.0",
+    "google-generativeai>=0.3.0",
+    "google-auth>=2.23.0",
+    "google-auth-oauthlib>=1.1.0",
+    "google-api-python-client>=2.100.0",
+    "vertexai>=1.38.0",
+    
     # Database Dependencies
     "neo4j>=5.15.0",
     "redis>=5.0.0",
